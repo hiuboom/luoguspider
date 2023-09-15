@@ -95,7 +95,25 @@ for P_data in Problem_data:
                         if html in file:
                             similar_files.append(file)
 ```
+```
+#再次修改
+for P_data in Problem_data:
+            selectone = selected_difficulty == "" or selected_difficulty == P_data["难度"]
+            selecttwo = target_keyword == "" or any(
+                tag in target_keyword for tag in P_data["标签"])
+            selectthree = not inputted_keyword or inputted_keyword in P_data["题目"].lower() or any(
+                tag in inputted_keyword for tag in P_data["标签"]) or inputted_keyword in P_data["题号"] or inputted_keyword in P_data["难度"]
 
+            if selectone and selecttwo and selectthree:
+                html = str(P_data["题号"])
+                # print(html)
+                flag = True
+                for file in files:
+                    file_path = os.path.join(folder_path, file)
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        if html in file:
+                            similar_files.append(file)
+```
 - **文件以md形式存储在./luogu/**
 
 
