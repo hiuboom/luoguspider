@@ -136,6 +136,7 @@ class FilterApp:
                     with open(file_path, "r", encoding="utf-8") as f:
                         if html in file:
                             similar_files.append(file)
+        similar_files=list(set(similar_files))
 
         if not flag:
             messagebox.showinfo("未找到", "未找到匹配的题目。")
