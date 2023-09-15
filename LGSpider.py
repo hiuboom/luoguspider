@@ -77,7 +77,7 @@ class LuoguSpider:
                     "难度": difficulty
                 }
                 problem_list.append(problem_info)
-
+        problem_list = list(set(problemproblem_list))
         with open('data.json', 'w', encoding='utf-8') as f:
             json.dump(problem_list, f, ensure_ascii=False, indent=4)
 
