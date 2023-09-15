@@ -13,11 +13,6 @@ class MainGUI:
         self.window.title("主界面")
         self.window.geometry("400x300")
 
-        self.canvas = tk.Canvas(self.window, width=400, height=300)
-        self.canvas.pack()
-
-        self.canvas.create_text(200, 150, text="这里是背景文字", font=("Arial", 24), fill="gray")
-
         self.spider_button = tk.Button(self.window, text="进入爬虫界面", command=self.open_spider_gui ,width=10, height=2)
         self.filter_button = tk.Button(self.window, text="进入搜题界面", command=self.open_filter_gui ,width=10, height=2)
 
