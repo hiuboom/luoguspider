@@ -36,8 +36,8 @@ class FilterApp:
         # 创建标签词选择菜单
         label_keywords = tk.Label(frame, text="标签项")
         label_keywords.grid(row=1, column=0, padx=10, pady=10)
-        keywords_options = ["", "NOIP 普及组", "NOIP 提高组", "递归",
-                            "字符串", "动态规划", "枚举", "高精度", "模拟", "02优化", "进制"]
+        keywords_options = ["", "动态规划,dp", "贪心", "递归",
+                            "字符串", "动态规划", "枚举", "高精度", "模拟", "02优化", "进制","数学"]
         dropdown_keywords = ttk.Combobox(
             frame, textvariable=self.selected_keywords, values=keywords_options)
         dropdown_keywords.current(0)
