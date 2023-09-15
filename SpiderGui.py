@@ -44,34 +44,20 @@ class LuoguSpiderGUI:
     def start_spider(self):
         start_pid = int(self.start_entry.get())
         end_pid = int(self.end_entry.get())
-
-        # 创建爬虫对象
         spider = LuoguSpider(
             "https://www.luogu.com.cn/problem/P", "./luogu/", start_pid, end_pid)
-        
-        # 设置回调函数，将输出追加到GUI文本框中
+        #爬题目
         spider.set_callback(self.update_log_text)
-        # SolutionSpider.set_callback(self.update_log_text)
-
-        # 创建线程运行爬虫
         t = Thread(target=self.run_spider, args=(spider,))
-        # s = Thread(target=self.run_spider, args=(SolutionSpider,))
         t.start()
-        # s.start()
 
     def second_spider(self):
         start_pid = int(self.start_entry.get())
         end_pid = int(self.end_entry.get())
-        # 获取cookies
         cookies = self.cookies
-        # 创建爬虫对象
         solutionSpider = SolutionSpider(cookies=cookies, url_base="https://www.luogu.com.cn/problem/solution/P", save_path="./luogu/", min_pid=start_pid, max_pid=end_pid)
-
-        # 设置回调函数，将输出追加到GUI文本框中
-        # spider.set_callback(self.update_log_text)
         solutionSpider.set_callback(self.update_log_text)
-
-        # 创建线程运行爬虫
+        # 创建线程运行爬题解
         s = Thread(target=self.run_SolutionSpider, args=(solutionSpider,))
         s.start()
 

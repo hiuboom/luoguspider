@@ -37,7 +37,7 @@ class LuoguSpider:
         else:
             return "error"
 
-    def get_problem_info(start_num, end_num):
+    def get_problem_info(self,start_num, end_num):
         user_agent = UserAgent()
         headers = {'User-Agent': user_agent.random}
         tag_url = 'https://www.luogu.com.cn/_lfe/tags'
@@ -48,33 +48,35 @@ class LuoguSpider:
                         4: '普及+/提高', 5: '提高+/省选−', 6: '省选/NOI−', 7: 'NOI/NOI+/CTSC'}
         
         problem_list = []
-        url = 'https://www.luogu.com.cn/problem/list?page=1'
-        html = requests.get(url=url, headers=headers).text
-        url_parse = re.findall('decodeURIComponent\((.*?)\)\)', html)[0]
-        html_parse = json.loads(urllib.parse.unquote(url_parse)[1:-1])
-        result_list = list(jsonpath.jsonpath(html_parse, '$.currentData.problems.result')[0])
+        page = 0
+        while page < 10:
+            url = 'https://www.luogu.com.cn/problem/list?page=f{page}'
+            page += 1
+            html = requests.get(url=url, headers=headers).text
+            url_parse = re.findall('decodeURIComponent\((.*?)\)\)', html)[0]
+            html_parse = json.loads(urllib.parse.unquote(url_parse)[1:-1])
+            result_list = list(jsonpath.jsonpath(html_parse, '$.currentData.problems.result')[0])
+            for result in result_list:
+                problem_id = jsonpath.jsonpath(result, '$.pid')[0]
+                problem_id_trimmed = problem_id[1:]
+                
+                if int(problem_id_trimmed) < start_num:
+                    continue
+                if int(problem_id_trimmed) > end_num:
+                    break
 
-        for result in result_list:
-            problem_id = jsonpath.jsonpath(result, '$.pid')[0]
-            problem_id_trimmed = problem_id[1:]
-            
-            if int(problem_id_trimmed) < start_num:
-                continue
-            if int(problem_id_trimmed) > end_num:
-                break
-
-            title = jsonpath.jsonpath(result, '$.title')[0]
-            difficulty = difficulty_map[int(jsonpath.jsonpath(result, '$.difficulty')[0])]
-            tags_s = list(jsonpath.jsonpath(result, '$.tags')[0])
-            tags = [tag_dict['name'] for tag_dict in tags_dicts if tag_dict['id'] in tags_s]
-            
-            problem_info = {
-                "题号": problem_id,
-                "题目": title,
-                "标签": tags,
-                "难度": difficulty
-            }
-            problem_list.append(problem_info)
+                title = jsonpath.jsonpath(result, '$.title')[0]
+                difficulty = difficulty_map[int(jsonpath.jsonpath(result, '$.difficulty')[0])]
+                tags_s = list(jsonpath.jsonpath(result, '$.tags')[0])
+                tags = [tag_dict['name'] for tag_dict in tags_dicts if tag_dict['id'] in tags_s]
+                
+                problem_info = {
+                    "题号": problem_id,
+                    "题目": title,
+                    "标签": tags,
+                    "难度": difficulty
+                }
+                problem_list.append(problem_info)
 
         with open('data.json', 'w', encoding='utf-8') as f:
             json.dump(problem_list, f, ensure_ascii=False, indent=4)
@@ -111,7 +113,7 @@ class LuoguSpider:
                 self.save_data(data, f"P{i}" + title + ".md")
                 self.log("保存成功!\n")
         self.log("爬取完成!\n")
-        get_problem_info(self.min_pid, self.max_pid)
+        self.get_problem_info(self.min_pid, self.max_pid)
 
 
     def log(self, text, end="\n"):

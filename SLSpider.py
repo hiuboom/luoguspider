@@ -23,7 +23,6 @@ class SolutionSpider:
         self.callback = callback
 
     def get_html(self, url):
-        # driver = webdriver.PhantomJS(executable_path="D:\\DownloadsD\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe")
         for key in self.cookies:
             c = {}
             c['name'] = key
@@ -32,10 +31,6 @@ class SolutionSpider:
             c['path'] = "/"
             c['httpOnly'] = False
             c['secure'] = False
-            # driver.add_cookie(c)
-        # driver.get(url = url)
-        # html = driver.page_source
-        # driver.close()
         res = requests.get(url=url, headers=self.headers, cookies=self.cookies)
         html = res.text
         if str(html).find("Exception") == -1:
