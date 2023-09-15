@@ -12,7 +12,7 @@
 ### 主界面
 运行mainGui.py进入主界面
 
-![img](./img/屏幕截图 2023-09-15 211241.png)
+![img](https://img-community.csdnimg.cn/images/53bbe796c9704664bc64cb43c048aec9.png "#left")
 
 ### 爬虫界面
 
