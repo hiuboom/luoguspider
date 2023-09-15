@@ -22,9 +22,38 @@
 
 ![img](https://img-community.csdnimg.cn/images/e863f840f6f64747a8d6041f289d7aff.png "#left")
 
+``` python
+    def log(self, text, end="\n"):
+        print(text, end=end)
+        if self.callback:
+            self.callback(text)  # 调用回调函数
+```
+
 - **爬取题解：同上**
 
 ![img](https://img-community.csdnimg.cn/images/d2af13af266c43279fc2333222b65fba.png "#left")
+```python
+def get_md(self, html):
+        bs = bs4.BeautifulSoup(html, "lxml")
+        js_text = bs.find("script").get_text()
+        r_text = re.search('(%[^"]+)(?=")', js_text)  # 正则表达式
+        python_text = urllib.parse.unquote(r_text.group(0))
+        python_text = python_text.encode(
+            'utf-8').decode('unicode_escape')  # 解码
+        return python_text
+```
+
+```
+    def second_spider(self):
+        start_pid = int(self.start_entry.get())
+        end_pid = int(self.end_entry.get())
+        cookies = self.cookies
+        solutionSpider = SolutionSpider(cookies=cookies, url_base="https://www.luogu.com.cn/problem/solution/P", save_path="./luogu/", min_pid=start_pid, max_pid=end_pid)
+        solutionSpider.set_callback(self.update_log_text)
+        # 创建线程运行爬题解
+        s = Thread(target=self.run_SolutionSpider, args=(solutionSpider,))
+        s.start()
+```
 
 ### 搜题界面：
 
@@ -37,6 +66,8 @@
 
 ![img](https://img-community.csdnimg.cn/images/1897685598994358b90b903ce27a1bad.png "#left")
 
+
+
 - **直接点击查看题目或题解**
 
 
@@ -44,6 +75,26 @@
 
 
 ![img](https://img-community.csdnimg.cn/images/7ab5b36dd3734fdc83cdcd5933d357b5.png "#left")
+
+```python
+#筛选
+for P_data in Problem_data:
+            selectone = selected_difficulty == "" or selected_difficulty == P_data["难度"]
+            selecttwo = target_keyword == "" or any(
+                tag in target_keyword for tag in P_data["标签"])
+            selectthree = not inputted_keyword or inputted_keyword in P_data["题目"].lower() or any(
+                inputted_keyword in tag.lower() for tag in P_data["标签"])
+
+            if selectone and selecttwo and selectthree:
+                html = str(P_data["题号"])
+                print(html)
+                flag = True
+                for file in files:
+                    file_path = os.path.join(folder_path, file)
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        if html in file:
+                            similar_files.append(file)
+```
 
 - **文件以md形式存储在./luogu/**
 
@@ -76,7 +127,10 @@ cookie可能失效了
 复制题解需要**登录**账号，这**非常重要！**
 
 ### 针对反爬机制
-
+```
+self.user_agent = UserAgent()
+        self.headers = {'User-Agent': self.user_agent.random}
+```
 - **先前使用PlantomJS+selumium，效果有点不尽人意，使用了requests和 fake_useragent生成随机头，不知为何就没怎么封我了，本来设置了休眠但50个题感觉没必要**
 
 ## 总结
