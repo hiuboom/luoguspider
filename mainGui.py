@@ -29,7 +29,6 @@ class MainGUI:
         self.window.destroy()  # 销毁主界面窗口
         from FilterGui import FilterApp  # 导入爬虫界面类
         gui = FilterApp()
-        gui.start()
 
     def start(self):
         self.window.mainloop()

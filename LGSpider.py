@@ -84,16 +84,31 @@ class LuoguSpider:
     def parse_html(self, html):
         bs = bs4.BeautifulSoup(html, "html.parser")
         core = bs.select("article")[0]
-        title = bs.select("title")[0].get_text()
+        # title = bs.select("title")[0].get_text()
         md = str(core)
         md = re.sub("<h1>", "# ", md)
         md = re.sub("<h2>", "## ", md)
         md = re.sub("<h3>", "#### ", md)
         md = re.sub("</?[a-zA-Z]+[^<>]*>", "", md)
-        return md, title
+        return md
+
+    def Get_Problem_title(self,problemID):
+        url = 'https://www.luogu.com.cn/problem/P' + str(problemID)
+        r = requests.get(url, headers=self.headers)
+        soup = bs4.BeautifulSoup(r.text, 'html.parser')
+        title = soup.find('title').text
+        title = title.split('-')[0]
+        title = title.strip()
+        return title
 
     def save_data(self, data, filename):
-        cfilename = self.save_path + filename
+        folder_name = os.path.splitext(filename)[0]
+        folder_name = folder_name + "/"
+        folder_path = os.path.join(self.save_path, folder_name)
+        # 如果文件夹不存在，则创建
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        cfilename = folder_path + filename
         file = open(cfilename, "w", encoding="utf-8")
         for d in data:
             file.writelines(d)
@@ -108,15 +123,18 @@ class LuoguSpider:
             if html == "error":
                 self.log("爬取失败...\n")
             else:
-                data, title = self.parse_html(html)
+                data = self.parse_html(html)
                 self.log("爬取成功,正在保存...", end="")
-                self.save_data(data, f"P{i}" + title + ".md")
+                self.save_data(data, f"P{i}-" + self.Get_Problem_title(i) + ".md")
                 self.log("保存成功!\n")
         self.log("爬取完成!\n")
         self.get_problem_info(self.min_pid, self.max_pid)
-
 
     def log(self, text, end="\n"):
         print(text, end=end)
         if self.callback:
             self.callback(text)  # 调用回调函数
+
+if __name__=="__main__":
+    spider = LuoguSpider("https://www.luogu.com.cn/problem/P", "./luogu/", 1000, 1001)
+    spider.run()

@@ -47,8 +47,22 @@ class SolutionSpider:
             'utf-8').decode('unicode_escape')  # 解码
         return python_text
 
+    def Get_Problem_title(self,problemID):
+        url = 'https://www.luogu.com.cn/problem/P' + str(problemID)
+        r = requests.get(url, headers=self.headers)
+        soup = bs4.BeautifulSoup(r.text, 'html.parser')
+        title = soup.find('title').text
+        title = title.split('-')[0]
+        title = title.strip()
+        return title
+
     def save_data(self, data, filename):
-        cfilename = self.save_path + filename
+        folder_name = os.path.splitext(filename)[0]
+        folder_name = folder_name.split("-题解")[0]+ "/"
+        folder_path = os.path.join(self.save_path, folder_name)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        cfilename = folder_path + filename
         file = open(cfilename, "w", encoding="utf-8")
         for d in data:
             file.writelines(d)
@@ -59,13 +73,12 @@ class SolutionSpider:
         for i in range(self.min_pid, self.max_pid+1):
             self.log("正在爬取P{}的题解...".format(i), end="")
             html = self.get_html(self.url_base + str(i))
-
             if html == "error":
                 self.log("爬取失败...\n")
             else:
                 problem_md = self.get_md(html)
                 self.log("题解爬取成功！..", end="")
-                self.save_data(problem_md, "P"+str(i)+"题解"+".md")
+                self.save_data(problem_md, f"P{i}-"+self.Get_Problem_title(i)+"-题解"+".md")
                 self.log("保存成功!\n")
         self.log("题解爬取完毕\n")
 

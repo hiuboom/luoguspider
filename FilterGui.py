@@ -131,11 +131,19 @@ class FilterApp:
                 html = str(P_data["题号"])
                 # print(html)
                 flag = True
-                for file in files:
-                    file_path = os.path.join(folder_path, file)
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        if html in file:
-                            similar_files.append(file)
+                # for file in files:
+                #     file_path = os.path.join(folder_path, file)
+                #     with open(file_path, "r", encoding="utf-8") as f:
+                #         if html in file:
+                #             similar_files.append(file)
+                for folder in files:
+                    folder_path = os.path.join("./luogu/", folder)
+                    for file in os.listdir(folder_path):
+                        file_path = os.path.join(folder_path, file)
+                        with open(file_path, "r", encoding="utf-8") as f:
+                            if html in file:  
+                                similar_files.append(file)
+
         similar_files=list(set(similar_files))
 
         if not flag:
@@ -150,7 +158,8 @@ class FilterApp:
         selected_file = self.listbox_results.get(
             self.listbox_results.curselection())  # 获取用户选择的文件名
 
-        file_path = os.path.join("./luogu/", selected_file)
+        one=selected_file.split(".")[0].split("-题解")[0]
+        file_path = os.path.join("./luogu/"+f"{one}" + "/" + selected_file)
 
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
