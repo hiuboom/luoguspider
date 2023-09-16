@@ -1,4 +1,4 @@
-# 
+
 
 
 | 这个作业属于哪个课程 | [2023秋-福州大学软件工程](https://bbs.csdn.net/forums/fzusdn-0831) |
@@ -76,27 +76,11 @@ def get_md(self, html):
 
 ![img](https://img-community.csdnimg.cn/images/7ab5b36dd3734fdc83cdcd5933d357b5.png "#left")
 
+
+![img](https://img-community.csdnimg.cn/images/351ac1c100e946fbb1a564b33721c865.png "#left")
+
 ```python
 #筛选
-for P_data in Problem_data:
-            selectone = selected_difficulty == "" or selected_difficulty == P_data["难度"]
-            selecttwo = target_keyword == "" or any(
-                tag in target_keyword for tag in P_data["标签"])
-            selectthree = not inputted_keyword or inputted_keyword in P_data["题目"].lower() or any(
-                inputted_keyword in tag.lower() for tag in P_data["标签"])
-
-            if selectone and selecttwo and selectthree:
-                html = str(P_data["题号"])
-                print(html)
-                flag = True
-                for file in files:
-                    file_path = os.path.join(folder_path, file)
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        if html in file:
-                            similar_files.append(file)
-```
-```
-#再次修改
 for P_data in Problem_data:
             selectone = selected_difficulty == "" or selected_difficulty == P_data["难度"]
             selecttwo = target_keyword == "" or any(
@@ -108,13 +92,23 @@ for P_data in Problem_data:
                 html = str(P_data["题号"])
                 # print(html)
                 flag = True
-                for file in files:
-                    file_path = os.path.join(folder_path, file)
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        if html in file:
-                            similar_files.append(file)
+                for folder in files:
+                    folder_path = os.path.join("./luogu/", folder)
+                    for file in os.listdir(folder_path):
+                        file_path = os.path.join(folder_path, file)
+                        with open(file_path, "r", encoding="utf-8") as f:
+                            if html in file:  
+                                similar_files.append(file)
 ```
+
 - **文件以md形式存储在./luogu/**
+
+
+![img](https://img-community.csdnimg.cn/images/51ee4e05d0fc4638a592f386443d20d6.png "#left")
+
+
+![img](https://img-community.csdnimg.cn/images/9a4d798b667e4d9da7706722b1fe9c7f.png "#left")
+
 
 
 #### AIGC表格
